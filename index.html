@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>websocket protocol</title>
+</head>
+<body>
+    <output id="message"></output>
+    <script>
+        const message = document.getElementById("message") 
+        const socket = new WebSocket("ws://localhost:3000")
+        socket.onopen= (event) => {console.log('socket opened')}
+        socket.onmessage= (msg) => {console.log('you got a message', msg)}
+        socket.onclose= (event) => {console.log('disconnected from socket server')}
+        socket.onerror= (error) => {console.log(`an error occur${error }`)};
+        
+    </script>
+</body>
+</html>
