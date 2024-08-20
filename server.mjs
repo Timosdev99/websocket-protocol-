@@ -2,7 +2,9 @@ import {createServer} from "http"
 const PORT = 3000
 const WEBSOCKET_MAGIC_STRING_KEY = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
 import crypto from 'crypto'
-
+const SEVEN_BITS_INTEGER_MARKER = 125
+const SIXTEEN_BITS_INTEGER_MARKER = 126
+const SIXTYFOUR_BITS_INTEGER_MARKER = 127
 const server = createServer((req, res)=>{
     res.writeHead(200);
     res.end('server is working')
@@ -19,7 +21,15 @@ function upgrade (req, socket, head) {
    console.log(headers)
 
    socket.write(headers)
+   socket.on('readable', () => onSocketReadable(socket))
 }
+
+function onSocketReadable(socket) {
+
+    socket.read(1)
+
+}
+
 
 function handshake(id) {
 const acceptkey = createsocketaccept(id)
