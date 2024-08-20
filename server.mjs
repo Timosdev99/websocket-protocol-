@@ -2,6 +2,7 @@ import {createServer} from "http"
 const PORT = 3000
 const WEBSOCKET_MAGIC_STRING_KEY = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'
 import crypto from 'crypto'
+
 const server = createServer((req, res)=>{
     res.writeHead(200);
     res.end('server is working')
@@ -14,8 +15,10 @@ server.on("upgrade", upgrade)
 function upgrade (req, socket, head) {
     const {"sec-websocket-key":webclientsocketkey } = req.headers
    console.log(`${webclientsocketkey} connected`)
-   const headers = handshake(webclientsocketkey)
+   const headers = handshake(webclientsocketkey) 
    console.log(headers)
+
+   socket.write(headers)
 }
 
 function handshake(id) {
