@@ -36,11 +36,44 @@ function upgrade (req, socket, head) {
 function onSocketReadable(socket) {
 
     socket.read(1)
-    
+
     const [markerAndPayloadLengh] = socket.read(1)
     const lengthIndicatorInBits = markerAndPayloadLengh - FIRST_BIT
     
+   let messageLength = 0
+  if (lengthIndicatorInBits <= SEVEN_BITS_INTEGER_MARKER) {
+    messageLength = lengthIndicatorInBits
+  } 
+  else if(lengthIndicatorInBits === SIXTEEN_BITS_INTEGER_MARKER) {
+    messageLength = socket.read(2).readUint16BE(0)
+  }
+  else {
+    throw new Error(`your message is too long! we don't handle 64-bit messages`)
+  }
+
+  const maskey = socket.read(MASK_KEY_BYTES_LENGTH)
+  const encoded = socket.read(messageLength)
+  const decoded = unmask(encoded, maskKey)
+}
+
+function unmask(encodedBuffer, maskKey) {
+    const finalbuffer = Buffer.from(encodedBuffer)
+    const fillWithEightZeros = (t) => t.padStart(8, "0")
+    const toBinary = (t) => fillWithEightZeros(t.toString(2))
+    const fromBinaryToDecimal = (t) => parseInt(toBinary(t), 2)
+    const getCharFromBinary = (t) => String.fromCharCode(fromBinaryToDecimal(t))
   
+    for (let index =0; index< encodedBuffer.length; index++) {
+      finalBuffer[index] = encodedBuffer[index] ^ maskKey[index % MASK_KEY_BYTES_LENGTH];
+  
+      const logger = {
+        unmaskingCalc: `${toBinary(encodedBuffer[index])} ^ ${toBinary(maskKey[index % MASK_KEY_BYTES_LENGTH])} = ${toBinary(finalBuffer[index])}`,
+        decoded: getCharFromBinary(finalBuffer[index])
+      }
+      console.log(logger)
+    }
+  
+    return finalbuffer
 }
 
 
