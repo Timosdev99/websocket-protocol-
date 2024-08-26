@@ -51,7 +51,7 @@ function onSocketReadable(socket) {
     throw new Error(`your message is too long! we don't handle 64-bit messages`) 
   }
 
-  const maskey = socket.read(MASK_KEY_BYTES_LENGTH)
+  const maskKey = socket.read(MASK_KEY_BYTES_LENGTH)
   const encoded = socket.read(messageLength)
   const decoded = unmask(encoded, maskKey)
   const received = decoded.toString('utf8')
