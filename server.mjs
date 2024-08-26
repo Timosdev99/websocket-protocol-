@@ -37,8 +37,8 @@ function onSocketReadable(socket) {
 
     socket.read(1)
 
-    const [markerAndPayloadLengh] = socket.read(1)
-    const lengthIndicatorInBits = markerAndPayloadLengh - FIRST_BIT
+    const [markerAndPayloadLength] = socket.read(1)
+    const lengthIndicatorInBits = markerAndPayloadLength - FIRST_BIT
     
    let messageLength = 0
   if (lengthIndicatorInBits <= SEVEN_BITS_INTEGER_MARKER) {
@@ -48,12 +48,22 @@ function onSocketReadable(socket) {
     messageLength = socket.read(2).readUint16BE(0)
   }
   else {
-    throw new Error(`your message is too long! we don't handle 64-bit messages`)
+    throw new Error(`your message is too long! we don't handle 64-bit messages`) 
   }
 
   const maskey = socket.read(MASK_KEY_BYTES_LENGTH)
   const encoded = socket.read(messageLength)
   const decoded = unmask(encoded, maskKey)
+  const received = decoded.toString('utf8')
+
+  const data = JSON.parse(received)
+  console.log('message received!', data)
+
+  const msg = JSON.stringify({
+    message: data,
+    at: new Date().toISOString()
+  })
+  sendMessage(msg, socket) 
 }
 
 function unmask(encodedBuffer, maskKey) {
