@@ -10,7 +10,14 @@
     <script>
         const message = document.getElementById("message") 
         const socket = new WebSocket("ws://localhost:3000")
-        socket.onopen= (event) => {console.log('socket opened')}
+        socket.onopen= (event) => {console.log('socket opened')
+            const id = Math.round(Math.random() * 100)
+            console.log('sending', id)
+            const data = JSON.stringify({
+                id,
+                name: `${id} timothh`
+            })
+        }
         socket.onmessage= (msg) => {console.log('you got a message', msg)}
         socket.onclose= (event) => {console.log('disconnected from socket server')}
         socket.onerror= (error) => {console.log(`an error occur${error }`)};

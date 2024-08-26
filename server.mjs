@@ -5,6 +5,15 @@ import crypto from 'crypto'
 const SEVEN_BITS_INTEGER_MARKER = 125
 const SIXTEEN_BITS_INTEGER_MARKER = 126
 const SIXTYFOUR_BITS_INTEGER_MARKER = 127
+
+
+const MAXIMUM_SIXTEEN_BITS_INTEGER = 2 ** 16 // 0 to 65536
+const MASK_KEY_BYTES_LENGTH = 4
+const OPCODE_TEXT = 0x01 // 1 bit in binary 1
+
+// parseInt('10000000', 2)
+const FIRST_BIT = 128
+
 const server = createServer((req, res)=>{
     res.writeHead(200);
     res.end('server is working')
@@ -27,7 +36,10 @@ function upgrade (req, socket, head) {
 function onSocketReadable(socket) {
 
     socket.read(1)
-
+    const [markerAndPayloadLengh] = socket.read(1)
+    const lengthIndicatorInBits = markerAndPayloadLengh - FIRST_BIT
+    
+  
 }
 
 
