@@ -36,6 +36,7 @@ function upgrade (req, socket, head) {
 function onSocketReadable(socket) {
 
     socket.read(1)
+    
     const [markerAndPayloadLengh] = socket.read(1)
     const lengthIndicatorInBits = markerAndPayloadLengh - FIRST_BIT
     

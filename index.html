@@ -15,7 +15,12 @@
             console.log('sending', id)
             const data = JSON.stringify({
                 id,
-                name: `${id} timothh`
+                name: `${id} timosdev`,
+                address: {
+                    number: Math.round(id),
+                    street: 'my street'
+                },
+                proffession: 'developer'
             })
         }
         socket.onmessage= (msg) => {console.log('you got a message', msg)}
