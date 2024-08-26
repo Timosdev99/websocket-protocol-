@@ -36,8 +36,14 @@ function upgrade (req, socket, head) {
 function onSocketReadable(socket) {
 
     socket.read(1)
+    
+  
 
-    const [markerAndPayloadLength] = socket.read(1)
+    const markerAndPayloadLength = socket.read(1);
+    if (!markerAndPayloadLength) {
+      // If no data is available, exit early
+      return;
+    }
     const lengthIndicatorInBits = markerAndPayloadLength - FIRST_BIT
     
    let messageLength = 0
@@ -92,7 +98,7 @@ const acceptkey = createsocketaccept(id)
 return acceptkey
 const headers = [
     'HTTP/1.1 101 Switching Protocols',
-    'Upgrade: websocket',
+    'Upgrade: websocket', 
     'Connection: Upgrade',
     `Sec-WebSocket-Accept: ${acceptKey}`,
     ''
